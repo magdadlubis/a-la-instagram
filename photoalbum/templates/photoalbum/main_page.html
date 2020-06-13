@@ -1,7 +1,47 @@
 {% extends 'photoalbum/base.html' %}
 
+{% load static %}
+
 {% block title %}strona główna{% endblock %}
 
 {% block content %}
-ZAWARTOŚĆ STRONY GŁÓWNEJ
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Dodaj">
+    </form>
+    {% for photo in photos %}
+        <table border="1" width="500">
+            <tr>
+            <th>Użytkownik</th>
+            <td><a href="{% url 'user' photo.user.pk %}">{% if photo.user.first_name %}
+                {{ photo.user.first_name }}
+                {% else %}
+                {{ photo.user.username }}
+                {% endif %}
+            </a></td>
+        </tr>
+        <tr>
+            <th>Data dodania</th>
+            <td>{{ photo.creation_date }}</td>
+        </tr>
+        <tr>
+            {% with 'photoalbum/'|add:photo.path as image_static %}
+                <td colspan="2" align="center"><a href="{% url 'photo' photo.pk %}"><img src="{% static image_static %}" alt="Nie można wyświetlić obrazu" width="450"></a></td>
+            {% endwith %}
+        </tr>
+        <tr>
+            <th>Liczba polubień ({{ photo.likes.count }})</th>
+            <td>
+                {% if request.user in photo.likes.all %}
+                    Lubisz to zdjęcie | <a href="{% url 'unlike' photo.pk %}">Znielub</a>
+                {% else %}
+                    <a href="{% url 'like' photo.pk %}">Polub zdjęcie</a>
+                {% endif %}
+            </td>
+        </tr>
+        </table>
+        <br>
+    {% endfor %}
+
 {% endblock %}

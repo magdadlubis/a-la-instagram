@@ -21,5 +21,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', MainPageView.as_view(), name='main-page'),
     path('login/', LoginView.as_view(), name='login'),
-    path('logout', LogoutView.as_view(), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('add_user/', AddUserView.as_view(), name='add-user'),
+    path('edit_user/', EditUserView.as_view(), name='edit-user'),
+    path('user/<int:user_id>/', UserView.as_view(), name='user'),
+    path('photo/<int:photo_id>/', PhotoView.as_view(), name='photo'),
+    path('unlike/<int:photo_id>/', UnlikeView.as_view(), name='unlike'),
+    path('like/<int:photo_id>/', LikeView.as_view(), name='like'),
 ]

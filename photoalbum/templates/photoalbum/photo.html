@@ -1,0 +1,50 @@
+{% extends 'photoalbum/base.html' %}
+
+{% load static %}
+
+{% block title %}strona zdjęcia{% endblock %}
+
+{% block content %}
+
+<table border="1" width="500">
+    <tr>
+        <tr>
+            <th>Zdjęcie</th>
+            {% with 'photoalbum/'|add:photo.path as image_static %}
+                <td width="500"><a href="{% url 'photo' photo.pk %}"><img src="{% static image_static %}" alt="Nie można wyświetlić obrazu" width="450"></a></td>
+            {% endwith %}
+        </tr>
+        <tr>
+            <th>Autor</th>
+            <td><a href="{% url 'user' photo.user.pk %}">{% if photo.user.first_name %}
+                {{ photo.user.first_name }}
+                {% else %}
+                {{ photo.user.username }}
+                {% endif %}
+            </a></td>
+        </tr>
+        <tr>
+            <th>Komentarze ({{ photo.comment_set.all.count }})</th>
+        </tr>
+        {% for comment in comments %}
+            <tr>
+                <td>
+                    {{ comment.user.username }}
+                </td>
+                <td>
+                    {{ comment.comment }}
+                </td>
+            </tr>
+
+        {% endfor %}
+    </tr>
+    </table>
+    {% if request.user.is_authenticated %}
+    <form method="POST">
+    {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Skomentuj">
+    </form>
+    {% endif %}
+
+{% endblock %}

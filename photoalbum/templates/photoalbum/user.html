@@ -1,0 +1,38 @@
+{% extends 'photoalbum/base.html' %}
+
+{% load static %}
+
+{% block title %}dane użytkownika{% endblock %}
+
+{% block content %}
+    {% for photo in photos %}
+        <table border="1" width="500px">
+        <tr>
+        <tr>
+            <th>Użytkownik</th>
+            <td><a href="{% url 'user' photo.user.pk %}">{% if photo.user.first_name %}
+                {{ photo.user.first_name }}
+                {% else %}
+                {{ photo.user.username }}
+                {% endif %}
+            </a></td>
+        </tr>
+        <tr>
+            <th>Data</th>
+            <td>{{ photo.creation_date }}</td>
+        </tr>
+        <tr>
+            <th>Zdjęcie</th>
+                {% with 'photoalbum/'|add:photo.path as image_static %}
+                    <td width="500"><a href="{% url 'photo' photo.pk %}"><img src="{% static image_static %}" alt="Nie można wyświetlić obrazu" width="450"></a>
+                {% endwith %}<hr>
+                Liczba polubień: {{ photo.likes.count }} | Liczba komentarzy: {{ photo.comment_set.all.count }} |
+                <a href="{% url 'photo' photo.pk %}">Zobacz zdjęcie</a>
+            </td>
+        </tr>
+
+    </tr>
+    </table><br>
+    {% endfor %}
+
+{% endblock %}
